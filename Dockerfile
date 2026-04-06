@@ -1,6 +1,5 @@
 FROM php:8.2-cli
 
-# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -8,13 +7,13 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev \
     zip \
+    libonig-dev \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
     mbstring \
     zip \
     bcmath
-
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
