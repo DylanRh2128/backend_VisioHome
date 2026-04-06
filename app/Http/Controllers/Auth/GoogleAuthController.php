@@ -18,7 +18,8 @@ class GoogleAuthController extends Controller
 
     public function handleGoogleCallback(Request $request)
 {
-    $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+    $frontendUrl = config('app.url_frontend');
+
 
     try {
         if (env('APP_ENV') === 'local') {

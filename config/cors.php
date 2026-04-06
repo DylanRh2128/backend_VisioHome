@@ -16,9 +16,9 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        env('FRONTEND_URL', 'http://localhost:5173'),
-        env('NGROK_URL', 'https://brosy-urochordal-zoie.ngrok-free.dev')
+        env('FRONTEND_URL'),
     ],
+
 
     'allowed_origins_patterns' => [],
 

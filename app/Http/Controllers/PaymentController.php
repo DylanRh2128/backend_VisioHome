@@ -10,7 +10,8 @@ class PaymentController extends Controller
 {
     public function success(Request $request)
     {
-        $frontend = rtrim(env('APP_URL_FRONTEND', 'http://localhost:5173'), '/');
+        $frontend = rtrim(config('app.url_frontend'), '/');
+
 
         // 🔥 Datos que vienen desde MercadoPago
         $status = $request->get('status');
@@ -61,13 +62,15 @@ class PaymentController extends Controller
 
     public function failure(Request $request)
     {
-        $frontend = rtrim(env('APP_URL_FRONTEND', 'http://localhost:5173'), '/');
+        $frontend = rtrim(config('app.url_frontend'), '/');
+
         return redirect($frontend . "/pago-error");
     }
 
     public function pending(Request $request)
     {
-        $frontend = rtrim(env('APP_URL_FRONTEND', 'http://localhost:5173'), '/');
+        $frontend = rtrim(config('app.url_frontend'), '/');
+
         return redirect($frontend . "/pago-pendiente");
     }
 }

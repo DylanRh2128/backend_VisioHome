@@ -33,13 +33,9 @@ class MercadoPagoService
         }
         $titulo = $pago->propiedad ? "Reserva: " . $pago->propiedad->titulo : "Reserva de Cita - VisioHome";
 
-        // Usar env() directamente porque config('app.url_frontend') puede retornar null si no está en config/app.php
-        $frontend = env('APP_URL_FRONTEND', 'http://localhost:5173');
-        $backend = env('APP_URL', 'http://localhost:8000');
-        
-        // Limpiar posibles slashes duplicados
-        $frontend = rtrim($frontend, '/');
-        $backend = rtrim($backend, '/');
+        $frontend = rtrim(config('app.url_frontend'), '/');
+        $backend = rtrim(config('app.url'), '/');
+
 
         \Log::info("Generando preferencia MercadoPago", [
             "cita" => $pago->idCita,
@@ -49,8 +45,7 @@ class MercadoPagoService
             "notification_url" => "{$backend}/api/webhooks/mercadopago"
         ]);
 
-        // Forzar el uso de NGROK_URL si existe, ya que MercadoPago bloquea auto_return hacia localhost
-        $backend = rtrim(env('NGROK_URL', env('APP_URL', 'http://localhost:8000')), '/');
+
 
         $payload = [
             "items" => [
