@@ -1,21 +1,28 @@
 FROM php:8.2-cli
 
-# Instalar dependencias
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    git unzip curl libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+    git \
+    unzip \
+    curl \
+    libpq-dev \
+    libzip-dev \
+    zip \
+    && docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    mbstring \
+    zip \
+    bcmath
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Crear carpeta de trabajo
+# Carpeta de trabajo
 WORKDIR /var/www
 
-# Copiar TODO el proyecto
+# Copiar proyecto
 COPY . .
-
-# Verificar archivos (debug)
-RUN ls -la
 
 # Instalar Laravel
 RUN composer install --no-dev --optimize-autoloader
@@ -23,7 +30,7 @@ RUN composer install --no-dev --optimize-autoloader
 # Permisos
 RUN chmod -R 777 storage bootstrap/cache
 
-# Exponer puerto
+# Puerto
 EXPOSE 10000
 
 # Ejecutar servidor
