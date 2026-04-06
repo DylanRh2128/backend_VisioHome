@@ -27,8 +27,9 @@ return new class extends Migration {
         });
 
         // Add check constraints exactly as in SQL dump
-        DB::statement("ALTER TABLE citas ADD CONSTRAINT citas_chk_1 CHECK (estado IN ('pendiente', 'confirmada', 'realizada', 'cancelada', 'no_asistio'))");
-        DB::statement("ALTER TABLE citas ADD CONSTRAINT citas_chk_2 CHECK (canal IN ('presencial', 'virtual'))");
+        DB::statement("ALTER TABLE \"citas\" ADD CONSTRAINT \"citas_chk_1\" CHECK (\"estado\" IN ('pendiente', 'confirmada', 'realizada', 'cancelada', 'no_asistio'))");
+        DB::statement("ALTER TABLE \"citas\" ADD CONSTRAINT \"citas_chk_2\" CHECK (\"canal\" IN ('presencial', 'virtual'))");
+
     }
     public function down(): void {
         Schema::dropIfExists('citas');

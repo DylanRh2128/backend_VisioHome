@@ -30,8 +30,9 @@ return new class extends Migration {
         });
 
         // Add check constraints exactly as in SQL dump
-        DB::statement("ALTER TABLE pagos ADD CONSTRAINT pagos_chk_1 CHECK (metodoPago IN ('tarjeta', 'transferencia', 'efectivo', 'paypal', 'otro', 'mercadopago'))");
-        DB::statement("ALTER TABLE pagos ADD CONSTRAINT pagos_chk_2 CHECK (estado IN ('pendiente', 'aprobado', 'rechazado', 'reembolsado'))");
+        DB::statement("ALTER TABLE \"pagos\" ADD CONSTRAINT \"pagos_chk_1\" CHECK (\"metodoPago\" IN ('tarjeta', 'transferencia', 'efectivo', 'paypal', 'otro', 'mercadopago'))");
+        DB::statement("ALTER TABLE \"pagos\" ADD CONSTRAINT \"pagos_chk_2\" CHECK (\"estado\" IN ('pendiente', 'aprobado', 'rechazado', 'reembolsado'))");
+
     }
     public function down(): void {
         Schema::dropIfExists('pagos');

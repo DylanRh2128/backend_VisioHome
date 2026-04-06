@@ -30,8 +30,9 @@ return new class extends Migration {
         });
 
         // Add check constraints exactly as in SQL dump
-        DB::statement("ALTER TABLE propiedades ADD CONSTRAINT propiedades_chk_1 CHECK (estado IN ('disponible', 'reservada', 'vendida', 'arrendada'))");
-        DB::statement("ALTER TABLE propiedades ADD CONSTRAINT propiedades_chk_2 CHECK (tipo IN ('casa', 'apartamento', 'lote', 'oficina', 'local', 'bodega', 'finca', 'otro'))");
+        DB::statement("ALTER TABLE \"propiedades\" ADD CONSTRAINT \"propiedades_chk_1\" CHECK (\"estado\" IN ('disponible', 'reservada', 'vendida', 'arrendada'))");
+        DB::statement("ALTER TABLE \"propiedades\" ADD CONSTRAINT \"propiedades_chk_2\" CHECK (\"tipo\" IN ('casa', 'apartamento', 'lote', 'oficina', 'local', 'bodega', 'finca', 'otro'))");
+
     }
     public function down(): void {
         Schema::dropIfExists('propiedades');

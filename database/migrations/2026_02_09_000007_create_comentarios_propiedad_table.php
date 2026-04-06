@@ -22,7 +22,8 @@ return new class extends Migration {
         });
 
         // Add check constraint
-        DB::statement("ALTER TABLE comentarios_propiedad ADD CONSTRAINT comentarios_propiedad_chk_1 CHECK (puntuacion BETWEEN 1 AND 5)");
+        DB::statement("ALTER TABLE \"comentarios_propiedad\" ADD CONSTRAINT \"comentarios_propiedad_chk_1\" CHECK (\"puntuacion\" BETWEEN 1 AND 5)");
+
     }
     public function down(): void {
         Schema::dropIfExists('comentarios_propiedad');
