@@ -6,19 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::dropIfExists('favorites');
-        Schema::create('favorites', function (Blueprint $table) {
+        Schema::dropIfExists('comments');
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->string('docUsuario', 36);
+            $table->string('docUsuario', 20);
             $table->unsignedBigInteger('idPropiedad');
+            $table->text('comentario');
+            $table->tinyInteger('puntuacion')->default(5)->comment('1-5 estrellas');
             $table->timestamps();
-            
-            $table->unique(['docUsuario', 'idPropiedad'], 'favorites_docusuario_idpropiedad_unique');
         });
     }
     public function down(): void {
-        Schema::dropIfExists('favorites');
+        Schema::dropIfExists('comments');
     }
 };
-
-

@@ -11,15 +11,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ejecutar seeders en orden de dependencias
         $this->call([
-            UsuarioSeeder::class,           // Primero usuarios
-            InmobiliariaSeeder::class,      // Luego inmobiliarias
-            AgenteSeeder::class,            // Agentes (dependen de inmobiliarias)
-            PropiedadSeeder::class,         // Propiedades (dependen de inmobiliarias)
-            PagoSeeder::class,              // Pagos (dependen de usuarios y propiedades)
+            RolesSeeder::class,
+            UsuariosSeeder::class,
+            InmobiliariasSeeder::class,
+            AgentesSeeder::class,
+            PropiedadesSeeder::class,
+            PropiedadImagenesSeeder::class,
+            ComentariosPropiedadSeeder::class,
+            CommentsSeeder::class,
+            CartsSeeder::class,
+            CartItemsSeeder::class,
+            CitasSeeder::class,
+            PagosSeeder::class,
+            DisponibilidadesSeeder::class,
+            ValoracionesAgentesSeeder::class,
+            FavoritesSeeder::class,
+            ConfigurationsSeeder::class,
         ]);
 
-        $this->command->info('✅ Datos de prueba cargados exitosamente');
+        $this->command->info('✅ Base de datos sembrada exitosamente desde archivos SQL');
     }
 }

@@ -3,41 +3,36 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
-    public function up(): void
-    {
+return new class extends Migration {
+    public function up(): void {
+        Schema::dropIfExists('citas');
         Schema::create('citas', function (Blueprint $table) {
             $table->bigIncrements('idCita');
-            $table->string('docUsuario', 36);
             $table->unsignedBigInteger('idPropiedad');
+            $table->string('docUsuario', 36)->nullable();
             $table->string('docAgente', 36)->nullable();
-            $table->unsignedBigInteger('idDisponibilidad')->nullable();
             $table->dateTime('fecha');
-            $table->decimal('precio', 15, 2)->nullable();
-            $table->enum('estado', ['pendiente', 'confirmada', 'cancelada', 'finalizada'])->default('pendiente');
-            $table->string('canal', 50)->default('presencial');
+            $table->string('estado', 20);
+            $table->string('canal', 20);
             $table->text('notas')->nullable();
-            $table->timestamps();
+            $table->dateTime('creado_en')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->bigInteger('idDisponibilidad')->nullable();
+            $table->decimal('precio', 15, 2)->nullable();
 
             // Foreign Keys
-            $table->foreign('docUsuario')->references('docUsuario')->on('usuarios')->onDelete('cascade');
-            $table->foreign('idPropiedad')->references('idPropiedad')->on('propiedades')->onDelete('cascade');
-            $table->foreign('docAgente')->references('docAgente')->on('agentes')->onDelete('set null');
-            $table->foreign('idDisponibilidad')->references('idDisponibilidad')->on('disponibilidades')->onDelete('set null');
+            $table->foreign('idPropiedad')->references('idPropiedad')->on('propiedades');
+            $table->foreign('docUsuario')->references('docUsuario')->on('usuarios');
         });
 
-
-        // Foreign Key para disponibilidades (se crea en su propia migración o aquí si aseguramos orden)
-        // Como 'disponibilidades' tiene timestamp 2026_02_23 y 'citas' 2026_02_18, 
-        // no podemos referenciarla aquí si queremos que corra 'fresh'.
-        // Solución: Dejar la columna y el usuario decidirá si añade el constraint después o simplemente usar el order.
+        // Add check constraints exactly as in SQL dump
+        DB::statement("ALTER TABLE citas ADD CONSTRAINT citas_chk_1 CHECK (estado IN ('pendiente', 'confirmada', 'realizada', 'cancelada', 'no_asistio'))");
+        DB::statement("ALTER TABLE citas ADD CONSTRAINT citas_chk_2 CHECK (canal IN ('presencial', 'virtual'))");
     }
-
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('citas');
     }
 };
+
 

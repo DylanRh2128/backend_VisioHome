@@ -3,27 +3,23 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
-    public function up(): void
-    {
+return new class extends Migration {
+    public function up(): void {
+        Schema::dropIfExists('valoraciones_agentes');
         Schema::create('valoraciones_agentes', function (Blueprint $table) {
-            $table->id('idValoracion');
+            $table->bigIncrements('idValoracion');
             $table->string('docAgente', 36);
             $table->string('docUsuario', 36);
-            $table->integer('puntuacion'); // 1-5
+            $table->integer('puntuacion');
             $table->text('comentario')->nullable();
-            $table->timestamps();
-
-            $table->foreign('docAgente')->references('docAgente')->on('agentes')->onDelete('cascade');
-            $table->foreign('docUsuario')->references('docUsuario')->on('usuarios')->onDelete('cascade');
+            $table->timestamp('creado_en')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
-
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('valoraciones_agentes');
     }
 };
+
 
