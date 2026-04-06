@@ -8,12 +8,18 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     libonig-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
     mbstring \
     zip \
-    bcmath
+    bcmath \
+    gd
+
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
