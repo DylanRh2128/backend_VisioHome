@@ -26,8 +26,10 @@ class RolesSeeder extends Seeder
 
             if (!empty($matches[0])) {
                 foreach ($matches[0] as $insert) {
+                    $insert = str_replace('`', '"', $insert);
                     DB::unprepared($insert);
                 }
+
             } else {
                 Log::warning("Seeder Warning: No INSERT INTO found in {$path}");
             }

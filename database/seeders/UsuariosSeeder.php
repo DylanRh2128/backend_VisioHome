@@ -25,8 +25,10 @@ class UsuariosSeeder extends Seeder
 
             if (!empty($matches[0])) {
                 foreach ($matches[0] as $insert) {
+                    $insert = str_replace('`', '"', $insert);
                     DB::unprepared($insert);
                 }
+
             }
         } catch (\Exception $e) {
             Log::error("Seeder Exception: Failed to seed {$table}. " . $e->getMessage());
