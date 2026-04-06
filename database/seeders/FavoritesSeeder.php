@@ -30,12 +30,13 @@ class FavoritesSeeder extends Seeder
                     }, explode(',', $values));
 
                     // Validación de FK: Si la propiedad no existe (>9), usamos la 1
-                    $idProp = (int)$val[2] > 9 ? 1 : $val[2];
+                                        // Dentro del foreach de FavoritesSeeder...
+                    $user = DB::table('usuarios')->first();
 
                     DB::table('favorites')->insert([
                         'id'          => $val[0],
-                        'docUsuario'  => $val[1],
-                        'idPropiedad' => $idProp,
+                        'docUsuario'  => $user->docUsuario, // Forzar usuario existente
+                        'idPropiedad' => (int)$val[2] > 9 ? 1 : $val[2],
                         'created_at'  => $val[3] ?? now(),
                         'updated_at'  => $val[4] ?? now(),
                     ]);

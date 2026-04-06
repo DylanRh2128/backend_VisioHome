@@ -11,9 +11,7 @@ class CitasSeeder extends Seeder
 {
     public function run(): void
     {
-        $table = 'citas';
-        $path = database_path("sql/visiohome/visiohome_{$table}.sql");
-
+        $path = database_path("sql/visiohome/visiohome_citas.sql");
         if (!File::exists($path)) return;
 
         try {
@@ -22,23 +20,29 @@ class CitasSeeder extends Seeder
             preg_match_all('/INSERT INTO "citas" VALUES \((.+?)\);/is', $sql, $matches);
 
             if (!empty($matches[1])) {
-                foreach ($matches[1] as $values) {
+                foreach ($matches[1] as $line) {
                     $val = array_map(function($item) {
-                        return trim($item) === 'NULL' ? null : str_replace("'", "", trim($item));
-                    }, explode(',', $values));
+                        $item = trim($item);
+                        return $item === 'NULL' ? null : str_replace("'", "", $item);
+                    }, explode(',', $line));
 
-                    $idProp = (int)$val[1] > 9 ? 1 : $val[1];
+                    // Validación: Si el usuario no existe en la DB actual, usamos el primero que haya
+                    $userExists = DB::table('usuarios')->where('docUsuario', $val[2])->exists();
+                    $agenteExists = DB::table('usuarios')->where('docUsuario', $val[3])->exists();
+                    
+                    $docUser = $userExists ? $val[2] : DB::table('usuarios')->value('docUsuario');
+                    $docAgente = $agenteExists ? $val[3] : DB::table('usuarios')->where('rol', 'agente')->value('docUsuario');
 
                     DB::table('citas')->insert([
                         'idCita'           => $val[0],
-                        'idPropiedad'      => $idProp,
-                        'docUsuario'       => $val[2],
-                        'docAgente'        => $val[3],
+                        'idPropiedad'      => (int)$val[1] > 9 ? 1 : $val[1],
+                        'docUsuario'       => $docUser,
+                        'docAgente'        => $docAgente,
                         'fecha'            => $val[4],
                         'estado'           => $val[5],
                         'canal'            => $val[6],
                         'notas'            => $val[7],
-                        'creado_en'        => $val[8], // Aquí usamos el nombre exacto de tu migración
+                        'creado_en'        => $val[8], // Nombre exacto de tu tabla
                         'idDisponibilidad' => $val[9],
                         'precio'           => $val[10],
                     ]);
