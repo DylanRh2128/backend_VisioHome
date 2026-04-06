@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class PagosSeeder extends Seeder
 {
@@ -23,19 +24,25 @@ class PagosSeeder extends Seeder
                 return $item === 'NULL' ? null : str_replace("'", "", $item);
             }, explode(',', $line));
 
-            $user = DB::table('usuarios')->where('docUsuario', $val[1])->first() ?? DB::table('usuarios')->first();
+            // Buscamos el usuario del SQL o el primero disponible
+            $user = DB::table('usuarios')->where('docUsuario', $val[1])->first() 
+                    ?? DB::table('usuarios')->first();
 
-            DB::table('pagos')->insert([
-                'idPago'      => $val[0],
-                'docUsuario'  => $user->docUsuario,
-                'idPropiedad' => (int)$val[2] > 9 ? 1 : $val[2],
-                'idCita'      => $val[3],
-                'monto'       => $val[4],
-                'metodoPago'  => $val[5],
-                'estado'      => $val[6],
-                'referencia'  => $val[7],
-                'fecha'       => $val[8],
-            ]);
+            if ($user) {
+                DB::table('pagos')->insert([
+                    'idPago'      => $val[0],
+                    'docUsuario'  => $user->docUsuario,
+                    'idPropiedad' => (int)$val[2] > 9 ? 1 : $val[2],
+                    'idCita'      => $val[3],
+                    'monto'       => $val[4],
+                    'metodoPago'  => $val[5],
+                    'estado'      => $val[6],
+                    'referencia'  => $val[7],
+                    'fecha'       => $val[8],
+                ]);
+            } else {
+                Log::warning("PagosSeeder: Saltando pago {$val[0]} porque no hay usuarios.");
+            }
         }
     }
 }
