@@ -26,8 +26,10 @@ class CitasSeeder extends Seeder
             if (!empty($matches[0])) {
                 foreach ($matches[0] as $insert) {
                     $insert = str_replace('`', '"', $insert);
+                    $insert = str_replace('INSERT INTO "citas"', 'INSERT INTO "citas" ("idCita", "idPropiedad", "docUsuario", "docAgente", "fecha", "estado", "canal", "notas", "creado_en", "idDisponibilidad", "precio")', $insert);
                     DB::unprepared($insert);
                 }
+
 
             }
         } catch (\Exception $e) {

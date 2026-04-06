@@ -24,12 +24,14 @@ class PagosSeeder extends Seeder
             preg_match_all('/INSERT INTO `?'.$table.'`?.+?;/is', $sql, $matches);
 
             if (!empty($matches[0])) {
+                DB::unprepared("SET session_replication_role = 'replica'");
                 foreach ($matches[0] as $insert) {
                     $insert = str_replace('`', '"', $insert);
                     DB::unprepared($insert);
                 }
-
+                DB::unprepared("SET session_replication_role = 'origin'");
             }
+
         } catch (\Exception $e) {
             Log::error("Seeder Exception: Failed to seed {$table}. " . $e->getMessage());
         }
