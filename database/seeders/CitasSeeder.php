@@ -18,16 +18,30 @@ class CitasSeeder extends Seeder
 
         try {
             $sql = File::get($path);
-            // Quitamos las comillas de MySQL y ajustamos para Postgres
             $sql = str_replace('`', '"', $sql);
-            
-            // Eliminamos el INSERT INTO genérico y usamos uno con columnas explícitas
-            // para asegurar que "creado_en" se llene correctamente.
             preg_match_all('/INSERT INTO "citas" VALUES \((.+?)\);/is', $sql, $matches);
 
             if (!empty($matches[1])) {
                 foreach ($matches[1] as $values) {
-                    DB::unprepared("INSERT INTO \"citas\" (\"idCita\", \"idPropiedad\", \"docUsuario\", \"docAgente\", \"fecha\", \"estado\", \"canal\", \"notas\", \"creado_en\", \"idDisponibilidad\", \"precio\") VALUES ($values)");
+                    $val = array_map(function($item) {
+                        return trim($item) === 'NULL' ? null : str_replace("'", "", trim($item));
+                    }, explode(',', $values));
+
+                    $idProp = (int)$val[1] > 9 ? 1 : $val[1];
+
+                    DB::table('citas')->insert([
+                        'idCita'           => $val[0],
+                        'idPropiedad'      => $idProp,
+                        'docUsuario'       => $val[2],
+                        'docAgente'        => $val[3],
+                        'fecha'            => $val[4],
+                        'estado'           => $val[5],
+                        'canal'            => $val[6],
+                        'notas'            => $val[7],
+                        'creado_en'        => $val[8], // Aquí usamos el nombre exacto de tu migración
+                        'idDisponibilidad' => $val[9],
+                        'precio'           => $val[10],
+                    ]);
                 }
             }
         } catch (\Exception $e) {
