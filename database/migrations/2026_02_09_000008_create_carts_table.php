@@ -6,22 +6,30 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+    public function up(): void  
     {
-        Schema::create('favorites', function (Blueprint $table) {
+        Schema::create('carts', function (Blueprint $table) {
             $table->id();
             $table->string('docUsuario', 36);
-            $table->unsignedBigInteger('idPropiedad');
             $table->foreign('docUsuario')->references('docUsuario')->on('usuarios')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('cart_items', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('idCart');
+            $table->unsignedBigInteger('idPropiedad');
+            $table->integer('cantidad')->default(1);
+            $table->foreign('idCart')->references('id')->on('carts')->onDelete('cascade');
             $table->foreign('idPropiedad')->references('idPropiedad')->on('propiedades')->onDelete('cascade');
-            $table->unique(['docUsuario', 'idPropiedad']);
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('favorites');
+        Schema::dropIfExists('cart_items');
+        Schema::dropIfExists('carts');
     }
 };
 
