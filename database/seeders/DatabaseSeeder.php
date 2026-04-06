@@ -6,9 +6,6 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $this->call([
@@ -18,18 +15,18 @@ class DatabaseSeeder extends Seeder
             AgentesSeeder::class,
             PropiedadesSeeder::class,
             PropiedadImagenesSeeder::class,
+            DisponibilidadesSeeder::class, // Movido arriba de Citas
             ComentariosPropiedadSeeder::class,
             CommentsSeeder::class,
             CartsSeeder::class,
             CartItemsSeeder::class,
             CitasSeeder::class,
-            PagosSeeder::class,
-            DisponibilidadesSeeder::class,
+            PagosSeeder::class, // Usaremos solo PagosSeeder (el del SQL)
             ValoracionesAgentesSeeder::class,
             FavoritesSeeder::class,
             ConfigurationsSeeder::class,
         ]);
 
-        $this->command->info('✅ Base de datos sembrada exitosamente desde archivos SQL');
+        $this->command->info('✅ Base de datos de VisioHome sembrada correctamente.');
     }
 }

@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class PagosSeeder extends Seeder
 {
@@ -14,26 +14,22 @@ class PagosSeeder extends Seeder
         $table = 'pagos';
         $path = database_path("sql/visiohome/visiohome_{$table}.sql");
 
-        if (!File::exists($path)) {
-            Log::error("Seeder Error: SQL file not found for {$table} at {$path}");
-            return;
-        }
+        if (!File::exists($path)) return;
 
         try {
             $sql = File::get($path);
-            preg_match_all('/INSERT INTO `?'.$table.'`?.+?;/is', $sql, $matches);
+            $sql = str_replace('`', '"', $sql);
 
-            if (!empty($matches[0])) {
-                DB::unprepared("SET session_replication_role = 'replica'");
-                foreach ($matches[0] as $insert) {
-                    $insert = str_replace('`', '"', $insert);
-                    DB::unprepared($insert);
+            preg_match_all('/INSERT INTO "pagos" VALUES \((.+?)\);/is', $sql, $matches);
+
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $values) {
+                    // Insertamos directamente. El orden del DatabaseSeeder garantiza que las FK existan.
+                    DB::unprepared("INSERT INTO \"pagos\" VALUES ($values)");
                 }
-                DB::unprepared("SET session_replication_role = 'origin'");
             }
-
         } catch (\Exception $e) {
-            Log::error("Seeder Exception: Failed to seed {$table}. " . $e->getMessage());
+            Log::error("Error en PagosSeeder: " . $e->getMessage());
         }
     }
 }
